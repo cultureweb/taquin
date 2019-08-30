@@ -1,0 +1,41 @@
+#wrapper {
+
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.row {
+    width: auto;
+    height: 100px;
+    margin: 1px;
+ 
+}
+
+
+.square {
+    width: 100px;
+    height: 100px;
+    margin: 0px;
+    margin: 1px;
+    display: inline-block;
+}
+
+
+.empty {
+    background: #FFFFFF;
+}
+
+.full {
+    background: #b0b0b0;
+}
+.footer {
+    border-top: 1px solid #efefef;
+    margin: 0px auto;
+    max-height: 33px;
+}
+.footer p {
+padding: 5px 0 9px 0;
+    font-size: 11px;
+    color: #adadad;
+}   
