@@ -2,33 +2,42 @@ let size = 2;
 let arrayForBoard = [];
 let solution = [];  // Tableau de jeu GAGNANT
 let counter = 0;
+let stateChecked = {};
 
 $(document).ready(() => {
     startNewGame();
 
     $('#start').click(() => {
-        //alert('newGame')
+        // alert('newGame')
         startNewGame();
         console.log(arrayForBoard)
     });
     $('#solve').click(() => {
         //alert('newGame')
         console.clear()
-        if (DFSFunction(arrayForBoard, 0, 5)) {
+        stateChecked = {};
+        solution = [];
+        if (DFSFunction(arrayForBoard, 0, 20)) {
             // gagné
             playSolution()
+        } else {
+            console.log('Pas trouvé')
         }
     });
 })
 
 function playSolution() {
-    debugger
+    //debugger
     console.log('ug', arrayForBoard)
 
     alert('temp')
-    setInterval(() => {
-        swap(arrayForBoard, arrayForBoard.lastIndexOf(arrayForBoard.length - 1), solution.shift())
-        drawBoard();
+    let intervalFunc = setInterval(() => {
+        if (solution.length > 0) {
+            swap(arrayForBoard, arrayForBoard.lastIndexOf(arrayForBoard.length - 1), solution.shift())
+            drawBoard();
+        } else {
+            clearInterval(intervalFunc);
+        }
     }, 1000);
     //console.log("trouvé solution", solution)
 }
@@ -53,19 +62,23 @@ function DFSFunction(dfsList, deep, maxDepth) {
     let possibilities = canMove(dfsList);
     for (let i = 0; i < possibilities.length; i++) {
         let list = dfsList.concat();
+
         let emptyCaseIndex = list.indexOf(list.length - 1)
 
         //  nouv_e = x(e) // on applique le mouvement x sur e
         swap(list, possibilities[i], emptyCaseIndex)
+        let hash = list.join();
+        if (!stateChecked[hash]) {
+            stateChecked[hash] = true;
+            solution.push(possibilities[i]);
+            //console.log("solution push ", solution)
 
-        solution.push(possibilities[i]);
-        //console.log("solution push ", solution)
-
-        //  si DFS(nouv_e, p+1, m) alors // DFS renvoie VRAI ou FAUX
-        if (DFSFunction(list, deep + 1, maxDepth)) {
-            return true;//  renvoyer VRAI
+            //  si DFS(nouv_e, p+1, m) alors // DFS renvoie VRAI ou FAUX
+            if (DFSFunction(list, deep + 1, maxDepth)) {
+                return true;//  renvoyer VRAI
+            }
+            solution.pop();
         }
-        solution.pop();
         //console.log("solution pop", solution)
     }
     // aucun des mouvements possibles ne mène à une solution
@@ -90,7 +103,7 @@ function startNewGame() {
         arrayForBoard.push(i);
     }
     // on mélange les 16 éléments
-    //shuffle(arrayForBoard);
+    shuffle(arrayForBoard);
     while (!isSolvable(arrayForBoard)) {
         //console.log('non resolvable')
         shuffle(arrayForBoard);
@@ -186,7 +199,7 @@ function canMove(puzzle) {
     let emptyCase = puzzle.lastIndexOf(puzzle.length - 1)
     let lineIndex = Math.floor(emptyCase / size)
     let colIndex = emptyCase % size;
-    console.log('type', typeof size)
+    //  console.log('type', typeof size)
     if (lineIndex !== 0) {
         //console.log('i can move up')
         possibilitiesArray.push(emptyCase - size)
